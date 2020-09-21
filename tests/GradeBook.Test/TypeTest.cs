@@ -5,9 +5,31 @@ using Assert = NUnit.Framework.Assert;
 
 namespace GradeBook.Test
 {
-
+    public delegate string WriteLogDelegate(string logMessage);
     public class TypeTest
     {
+        int count = 0;
+        [Fact]
+        public void WriteLogDelegateCanPointToMethod()
+        {
+            WriteLogDelegate log = ReturnMessage;
+            log += ReturnMessage;
+            log += IncrementCount;
+            var result = log("hey");
+            Assert.AreEqual(3, count);
+        }
+
+        string IncrementCount(string message)
+        {
+            count++;
+            return message.ToLower();
+        }
+        string ReturnMessage(string message)
+        {
+            count++;
+            return message;
+        }
+
         [Fact]
         public void PassByValueTest()
         {

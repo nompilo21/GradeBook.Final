@@ -3,10 +3,26 @@ using System.Collections.Generic;
 
 namespace GradeBook
 {
-    public class Book
+    public delegate void GradeAddedDelegate(object sender, EventArgs args);
+
+    public class NamedObject: Object
+        //inheritance base class
+    {
+        public NamedObject(string name)
+        {
+            Name = name;
+        }
+
+        public string Name
+        {
+            get;
+            set;
+        }
+    }
+    public class Book: NamedObject //inheritance
     {
         //add constructor with parameter...note a constructor has no return type
-        public Book(string name)
+        public Book(string name) : base(name)
         {
             //method for class book which creates a list of the double property.
             grades = new List<double>();
@@ -16,7 +32,7 @@ namespace GradeBook
 
         //Method to add letter grade, eg) A, B or C
         //Switch statements
-        public void AddLetterGrade(char letter)
+        public void AddGrade(char letter)
         {
             switch (letter)
             {
@@ -51,13 +67,22 @@ namespace GradeBook
             if (grade <= 100 && grade >= 0)
             {
                 grades.Add(grade);
+                if (GradeAdded != null)
+                {
+                    GradeAdded(this, new EventArgs());
+                }
             }
             else
             {
+                //throwing exceptions
                 throw new ArgumentException($"invalid {nameof(grade)}");
             }
 
         }
+
+
+
+        public event GradeAddedDelegate GradeAdded;
 
         public Statistics GetStatistics()
         {
@@ -112,7 +137,8 @@ namespace GradeBook
         }
         //add field
         private List<double> grades;
-        public string Name;
+        //defining properties using getters and setters
+        public const string Category = "science";
     }
 }
 
